@@ -436,6 +436,17 @@ Push notifications to the lord's phone via ntfy. Karo manages streaks and notifi
    - Check frog: if any completed task_id matches `today.frog` → 🐸 notification, reset frog
 6. Send ntfy notification
 
+### cmd Completion Without Subtasks
+
+When Karo completes a cmd directly (no ashigaru subtasks):
+1. Validate purpose against acceptance_criteria
+2. Update cmd status to `done` in `queue/shogun_to_karo.yaml`
+3. Update `saytask/streaks.yaml` (same as Step 11.7.5)
+4. Send ntfy: `bash scripts/ntfy.sh "✅ cmd_XXX 完了！(家老直接対応)"`
+5. Update dashboard.md
+
+**ntfy notification is MANDATORY on every cmd completion**, regardless of whether subtasks were used.
+
 ### Eat the Frog (today.frog)
 
 **Frog = The hardest task of the day.** Either a cmd subtask (AI-executed) or a SayTask task (human-executed).
@@ -582,9 +593,10 @@ STEP 2: Write next task YAML first (YAML-first principle)
   → queue/tasks/ashigaru{N}.yaml — ready for ashigaru to read after /clear
 
 STEP 3: Reset pane title (after ashigaru is idle — ❯ visible)
-  tmux select-pane -t multiagent:0.{N} -T "Sonnet"   # ashigaru 1-4
-  tmux select-pane -t multiagent:0.{N} -T "Opus"     # ashigaru 5-8
-  Title = MODEL NAME ONLY. No agent name, no task description.
+  Title = MODEL NAME ONLY. Read from tmux @model_name:
+    tmux display-message -t multiagent:0.{N} -p '#{@model_name}'
+  Then set:
+    tmux select-pane -t multiagent:0.{N} -T "<model_name>"
   If model_override active → use that model name
 
 STEP 4: Send /clear via inbox
@@ -776,15 +788,17 @@ Ashigaru handle implementation only: article creation, code changes, file operat
 
 ## Model Configuration
 
-| Agent | Model | Pane | Role |
-|-------|-------|------|------|
-| Shogun | Opus | shogun:0.0 | Project oversight |
-| Karo | Sonnet | multiagent:0.0 | Fast task management |
-| Ashigaru 1-7 | Sonnet | multiagent:0.1-0.7 | Implementation |
-| Gunshi | Opus | multiagent:0.8 | Strategic thinking |
+| Agent | CLI | Model | Pane | Role |
+|-------|-----|-------|------|------|
+| Shogun | Claude Code | Opus | shogun:0.0 | Project oversight |
+| Karo | Claude Code | Sonnet | multiagent:0.0 | Fast task management |
+| Ashigaru 1-2 | Claude Code | Sonnet | multiagent:0.1-0.2 | Standard implementation |
+| Ashigaru 3-4 | Claude Code | Opus | multiagent:0.3-0.4 | Complex implementation |
+| Ashigaru 5-7 | Codex CLI | (default) | multiagent:0.5-0.7 | Codex implementation |
+| Ashigaru 8 | Codex CLI | Spark | multiagent:0.8 | Lightweight tasks |
 
-**Default: Assign implementation to ashigaru (Sonnet).** Route strategy/analysis to Gunshi (Opus).
-No model switching needed — each agent has a fixed model matching its role.
+**Default: Assign implementation to ashigaru.** Route strategy/analysis to Gunshi (Opus).
+Agent model assignments are configured in `config/settings.yaml`.
 
 ### Bloom Level → Agent Mapping
 

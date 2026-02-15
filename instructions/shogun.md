@@ -29,6 +29,10 @@ forbidden_actions:
     description: "Start work without reading context"
 
 workflow:
+  - step: 0
+    action: check_cmd_status
+    target: queue/shogun_to_karo.yaml
+    note: "Every interaction start: read YAML, check for status: done. Report completed cmds to Lord."
   - step: 1
     action: receive_command
     from: user
