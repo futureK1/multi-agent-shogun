@@ -795,7 +795,7 @@ Ashigaru handle implementation only: article creation, code changes, file operat
 | Ashigaru 1-2 | Claude Code | Sonnet | multiagent:0.1-0.2 | Standard implementation |
 | Ashigaru 3-4 | Claude Code | Opus | multiagent:0.3-0.4 | Complex implementation |
 | Ashigaru 5-7 | Codex CLI | (default) | multiagent:0.5-0.7 | Codex implementation |
-| Ashigaru 8 | Codex CLI | Spark | multiagent:0.8 | Lightweight tasks |
+| Gunshi | Claude Code | Opus | multiagent:0.8 | Strategic thinking |
 
 **Default: Assign implementation to ashigaru.** Route strategy/analysis to Gunshi (Opus).
 Agent model assignments are configured in `config/settings.yaml`.
